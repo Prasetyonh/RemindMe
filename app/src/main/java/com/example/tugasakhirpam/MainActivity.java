@@ -53,9 +53,12 @@ import static java.util.Calendar.MINUTE;
 
 public class MainActivity extends AppCompatActivity {
 
+    //inisialisasi
     public static final String NOTIFICATION_CHANNEL_ID = "0";
     private final static String default_notification_channel_id = "default";
     private static final String TAG = "MainActivity";
+
+    //deklarasi
     private DBHelper databaseHelper;
     private ListView itemsListView;
     private FloatingActionButton fab;
@@ -66,8 +69,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DBHelper(this);
+
+        //untuk menghubungkan variabel fab dengan komponen pada layout dengan id fab
         fab = findViewById(R.id.fab);
+        //untuk menghubungkan variabel itemListView dengan komponen pada layout dengan id itemsList
         itemsListView = findViewById(R.id.itemsList);
+
+        //memanggil method
         populateListView();
         onFabClick();
 
@@ -75,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
 
     //Mengatur notifikasi
     private void scheduleNotification(Notification notification, long delay) {
+        //memanggil class Notifikasi
         Intent notificationIntent = new Intent(this, Notifikasi.class);
+        //mengambil data Notifikasi Id
         notificationIntent.putExtra(Notifikasi.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(Notifikasi.NOTIFICATION, notification);
+        //intent yang dikirim akan ditampilkan menurut waktu yang sudah didaftarkan
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
                 notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getLayoutInflater().getContext().getSystemService(Context.ALARM_SERVICE);
@@ -88,29 +99,33 @@ public class MainActivity extends AppCompatActivity {
 
     private Notification getNotification(String content) {
 
-        //Saat notifikasi di klik di arahkan ke MainActivity
+        //Saat notifikasi di klik oleh user akan masuk ke MainActivity
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+        //mengambil suara notifikasi dari deriktori Raw
         Uri soundUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/" + R.raw.ringtone);
+        //menginiaslisasi notificationBuilder
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getLayoutInflater().getContext(), default_notification_channel_id);
-        notificationBuilder.setSmallIcon(R.drawable.iconapp)
-                .setContentTitle("PENGINGAT")
-                .setContentText(content)
-                .setAutoCancel(true);
+        notificationBuilder.setSmallIcon(R.drawable.iconapp)//menampilkan icon aplikasi didalam notifikasi
+                .setContentTitle("PENGINGAT")//menampilkan judul notifikasi
+                .setContentText(content)//menampilkan text sesuai dengan content
+                .setAutoCancel(true);//untuk menutup notifikasi
+
+        //agar notifikasi muncul di channel id yang sudah di tentukan
         notificationBuilder.setChannelId(NOTIFICATION_CHANNEL_ID)
-                .setSound(soundUri)
+                .setSound(soundUri)//untuk memutar suara notifikasi
                 .setContentIntent(pendingIntent);
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 
-            if(soundUri != null){
+            if(soundUri != null){//jika soundUri tidak null maka akan menjalankan kode didalamnya
 
-                notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);
+                notificationBuilder.setDefaults(Notification.DEFAULT_VIBRATE);//mengatur vibrate secara default
                 // membuat AudioAtribut
-                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                AudioAttributes audioAttributes = new AudioAttributes.Builder() //
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .build();
@@ -121,29 +136,33 @@ public class MainActivity extends AppCompatActivity {
                 mNotificationManager.createNotificationChannel(notificationChannel);
             }
         }
-        return notificationBuilder.build();
+        return notificationBuilder.build();//mengembalikan nilai notificationBuilder.build()
     }
 
 
-    //Memasukkan data ke database
+    //Memasukkan data ke dalam database
     private void insertDataToDb(String judul, String tanggal, String jam) {
+        //mengirim variabel yang di input user ke databaseHelper untuk dimasukkan ke dalam database
         boolean insertData = databaseHelper.insertData(judul, tanggal, jam);
-        if (insertData) {
+        if (insertData) {   //jika berhasil menambahkan data maka akan menjalankan kode didalamnya
             try {
                 populateListView();
-                toastMsg("Reminder ditambahkan");
+                toastMsg("Reminder ditambahkan");//menampilkan toast pesan
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else
-            toastMsg("Opps.. terjadi kesalahan saat menyimpan!");
+        } else //jika gagal menambakan data akan menjalankan kode didalamnya
+            toastMsg("Opps.. terjadi kesalahan saat menyimpan!");//menampilkan pesan toast
     }
 
     //Mengambil seluruh data dari database ke listview
     private void populateListView() {
         try {
+            //mengubah data didalam database menjadi arraylist
             ArrayList<Pengingat> items = databaseHelper.getAllData();
+            //inisiasi Adapter
             Adapter adptr = new Adapter(this, items);
+            //menampilkan data kedalam listview
             itemsListView.setAdapter(adptr);
             adptr.notifyDataSetChanged();
         } catch (Exception e) {
@@ -151,10 +170,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onFabClick() {
+    private void onFabClick() { //saat buton fab diklik maka akan menjalankan kode didalamnya
         try {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
+                //jika button fab diklik akan menampilkan dialog
                 public void onClick(View v) {
                     showAddDialog();
                 }
@@ -166,26 +186,34 @@ public class MainActivity extends AppCompatActivity {
 
     //Fungsi dari tombol tambah
     @SuppressLint("SimpleDateFormat")
-    private void showAddDialog() {
+    private void showAddDialog() {  //menampilkan dialog
+        //inisialisasi AlertDialog.Builder
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getLayoutInflater().getContext());
         LayoutInflater inflater = this.getLayoutInflater();
         @SuppressLint("InflateParams")
+        //menghubungkan dengan layout dialog_pengingat
         final View dialogView = inflater.inflate(R.layout.dialog_pengingat, null);
         dialogBuilder.setView(dialogView);
 
+        //deklarasi dan menghubungkan variabel judul dengan variabel didalam layout
         final EditText judul = dialogView.findViewById(R.id.edit_title);
+        //deklarasi dan menghubungkan variabel tanggal dengan variabel didalam layout
         final TextView tanggal = dialogView.findViewById(R.id.date);
+        //deklarasi dan menghubungkan variabel waktu dengan variabel didalam layout
         final TextView waktu = dialogView.findViewById(R.id.time);
 
         final long date = System.currentTimeMillis();
+        //untuk menampilkan format date
         SimpleDateFormat dateSdf = new SimpleDateFormat("d MMMM");
         String dateString = dateSdf.format(date);
         tanggal.setText(dateString);
 
+        //menampilkan format waktu
         SimpleDateFormat timeSdf = new SimpleDateFormat("hh : mm a");
         String timeString = timeSdf.format(date);
         waktu.setText(timeString);
 
+        //mengatur calendar menjadi waktu realtime
         final Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
 
@@ -194,19 +222,22 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
+                //inisialisasi DatePickerDialog
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getLayoutInflater().getContext(),
                         new DatePickerDialog.OnDateSetListener() {
                             @SuppressLint("SetTextI18n")
                             @Override
+
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 String newMonth = getMonth(monthOfYear + 1);
                                 tanggal.setText(dayOfMonth + " " + newMonth);
-                                cal.set(Calendar.YEAR, year);
-                                cal.set(Calendar.MONTH, monthOfYear);
-                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                cal.set(Calendar.YEAR, year);//set tahun sesuai tahun saat ini
+                                cal.set(Calendar.MONTH, monthOfYear);//set bulan sesuai bulan saat ini
+                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);//set tanggal sesuai tanggal saat ini
                             }
                         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
+                datePickerDialog.show();//menampilkan dialog date picker
+                //minimal tanggal hari ini yang dapat dipilih(tidak dapat memilih tanggal sebelumny)
                 datePickerDialog.getDatePicker().setMinDate(date);
             }
         });
@@ -215,12 +246,16 @@ public class MainActivity extends AppCompatActivity {
         waktu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //inisialisasi dialog time picker
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getLayoutInflater().getContext(),
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 String time;
-                                @SuppressLint("DefaultLocale") String minTime = String.format("%02d", minute);
+                                @SuppressLint("DefaultLocale")
+                                        //format menit dalam 2 digit
+                                String minTime = String.format("%02d", minute);
+                                //menentukan waktu AM dan PM
                                 if (hourOfDay >= 0 && hourOfDay < 12) {
                                     time = hourOfDay + " : " + minTime + " AM";
                                 } else {
@@ -230,22 +265,27 @@ public class MainActivity extends AppCompatActivity {
                                     time = hourOfDay + " : " + minTime + " PM";
                                 }
                                 waktu.setText(time);
-                                cal.set(Calendar.HOUR, hourOfDay);
-                                cal.set(Calendar.MINUTE, minute);
-                                cal.set(Calendar.SECOND, 0);
+                                cal.set(Calendar.HOUR, hourOfDay);//set jam sesuai jam saat ini
+                                cal.set(Calendar.MINUTE, minute);//set menit sesuai menit saat ini
+                                cal.set(Calendar.SECOND, 0);//set detik menjadi 0
+                                //pesan log jika berhasil
                                 Log.d(TAG, "onTimeSet: Time has been set successfully");
                             }
+                            //menerima input data dari user
                         }, cal.get(Calendar.HOUR), cal.get(MINUTE), false);
-                timePickerDialog.show();
+                timePickerDialog.show();//menampilkan dialog timepicker
             }
         });
 
-        dialogBuilder.setTitle("Buat Pengingat Baru");
+
+        dialogBuilder.setTitle("Buat Pengingat Baru");//Judul dialog
+        //positif button berfungsi untuk menambahkan pengingat yang sudah diisi oleh user
         dialogBuilder.setPositiveButton("Tambah", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String title = judul.getText().toString();
                 String date = tanggal.getText().toString();
                 String time = waktu.getText().toString();
+                //jika judul tidak kosong maka menjalankan kode dialamnya
                 if (title.length() != 0) {
                     try {
                         insertDataToDb(title, date, time);
@@ -253,19 +293,21 @@ public class MainActivity extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
-
+                } else { //jika judul kosong maka tidak tersimpan dan menampilkan toast pesan
                     toastMsg("Oops, Harus diisi Semua !");
                 }
             }
         });
+        //negatif button berfungsi untuk keluar dari dialog
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.cancel();
             }
         });
+
+        //inisialisasi AlertDialog
         AlertDialog b = dialogBuilder.create();
-        b.show();
+        b.show();//menampilkan dialog
     }
 
     //Metode pesan toast
@@ -274,8 +316,6 @@ public class MainActivity extends AppCompatActivity {
         t.setGravity(Gravity.CENTER, 0,0);
         t.show();
     }
-
-    //Mengkonversi bulan dari huruf menjadi angka
     private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month - 1];
     }
@@ -286,28 +326,33 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    //memanggil item menu
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.tentang){
-            callAbout();
+            callAbout();//memanggil method
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void callAbout(){
+        //inisialisasi AlertDialog.Builder
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
-        builder.setMessage(
+        builder.setMessage( //didalam dialog terdapat text seperti dibawah ini
                 "About App : \n\n" +
                         "RemindMe \n" +
                         "Version 1.0 \n\n"+
                         "===========================\n\n" +
                         "Made with ❤ By Prasetyo N.H");
         builder.setCancelable(true);
+        //membuat negatif button dengan text Ok
         builder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
             @Override
+            //ketika button Ok diklik maka akan menutup dialog
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
+        //menampilkan dialog
         builder.show();
     }
 }
