@@ -10,11 +10,25 @@ import android.content.Intent;
 public class Notifikasi extends BroadcastReceiver {
 
     //deklarasi dan  inisialisasi notification id
+    /**
+     * deklarasi dan  inisialisasi NOTIFICATION_ID
+     */
     public static String NOTIFICATION_ID = "notification-id";
+
+
     //deklarasi dan inisialisasi notification
+    /**
+     * deklarasi dan inisialisasi NOTIFICATION
+     */
     public static String NOTIFICATION = "notification";
 
     //untuk menerima pesan broadcast yang masuk
+
+    /**
+     * Method ini berfungsi untuk membuat notifikasi
+     * @param context Sebuah Context memberikan akses informasi atas application state. Ia memperbolehkan Activity, Fragment, dan Service untuk mengakses file, gambar, theme/style, dan lokasi direktori eksternal. Context juga memberikan akses ke service yang terpasang di Android yang akan digunakan misalnya untuk layout inflation, keyboard, dan mencari content provider
+     * @param intent mengarahkan ke halaman lain
+     */
     public void onReceive(Context context, Intent intent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification = intent.getParcelableExtra(NOTIFICATION);

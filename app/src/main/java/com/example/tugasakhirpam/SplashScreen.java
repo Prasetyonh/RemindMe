@@ -11,10 +11,15 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-//kelas Activity yang memungkinkan untuk menggunakan fitur aplikasi Android terbaru
+
 public class SplashScreen extends AppCompatActivity {
 
+    /**
+     * Dalam method onCreate kondisi awal saat Activity baru diciptakan, biasanya dilakukan inisialisasi pada tahapan ini
+     * @param savedInstanceState savedInstanceState digunakan untuk menyimpan state dari halaman sebelumnya
+     */
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

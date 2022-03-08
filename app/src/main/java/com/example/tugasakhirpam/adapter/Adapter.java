@@ -21,9 +21,20 @@ import java.util.ArrayList;
 public class Adapter extends BaseAdapter {
 
     //deklarasi
+
+    /**
+     * Inisialisasi dari Context
+     */
     private Context context;
+
+    /**
+     * Inisialisasi dari ArrayList
+     */
     private ArrayList<Pengingat> arrayList;
 
+    /**
+     * Berfungsi untuk membuat konstruktor
+     */
     public Adapter(Context context, ArrayList<Pengingat> arrayList) {
         super();
         this.context = context;
@@ -32,18 +43,27 @@ public class Adapter extends BaseAdapter {
 
     //untuk mengembalikan jumlah data yang akan ditampilkan pada list
     @Override
+    /**
+     * Berfungsi untuk mengembalikan jumlah data yang akan ditampilkan pada list
+     */
     public int getCount() {
         return this.arrayList.size();
     }
 
     //mendapatkan posisi data dalam array list
     @Override
+    /**
+     * Berfungsi untuk mendapatkan posisi data dalam array list
+     */
     public Object getItem(int position) {
         return arrayList.get(position);
     }
 
     //mengembalikan nilai dari posisi item ke adapter
     @Override
+    /**
+     * Berfungsi untuk mengembalikan nilai dari posisi item ke adapter
+     */
     public long getItemId(int position) {
         return position;
     }
@@ -51,6 +71,9 @@ public class Adapter extends BaseAdapter {
 
     @SuppressLint({"ViewHolder", "InflateParams"})
     @Override
+    /**
+     * Berfungsi untuk menghubungkan variable dengan xml pada layout
+     */
     public View getView(int position, View convertView, final ViewGroup parent) {
 
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -89,6 +112,11 @@ public class Adapter extends BaseAdapter {
     }
 
     //Menghapus pengingat dari listview
+
+    /**
+     * Berfungai menghapus pengingat dari listview
+     * @param position untuk memindai posisi index pada arrayList
+     */
     private void deleteItem(int position) {
         deleteItemFromDb(arrayList.get(position).getId());
         arrayList.remove(position);
@@ -96,6 +124,11 @@ public class Adapter extends BaseAdapter {
     }
 
     //Menghapus pengingat dari database
+
+    /**
+     * Method yang berfungsi untuk menghapus pengingat dari database
+     * @param id parameter yang digunakan agar dapat menghapus pengingat berdasarkan id
+     */
     private void deleteItemFromDb(int id) {
         DBHelper databaseHelper = new DBHelper(context);
         try {
@@ -114,6 +147,11 @@ public class Adapter extends BaseAdapter {
 
 
     //method pesan toast
+
+    /**
+     * Menampilkankan toast message
+     * @param msg parameter ini berfungsi untuk menyimpan pesan yang akan ditampilkan pada toast
+     */
     private void toastMsg(String msg) {
         Toast t = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
         //menampilkan pesan

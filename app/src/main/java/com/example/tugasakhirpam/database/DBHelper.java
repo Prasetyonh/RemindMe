@@ -15,15 +15,37 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
 
     //deklarasi dan inisialisasi nama database
+    /**
+     * deklarasi dan inisialisasi nama database
+     */
     private static  String TAG = "DatabaseHelper";
 
     //deklarasi dan inisialisasi nama tabel
+    /**
+     * deklarasi dan inisialisasi nama tabel
+     */
     private static  String TABLE_NAME = "pengingat";
 
+    /**
+     * deklarasi dan inisialisasi kolom 1
+     */
     private static  String COL1 = "ID"; //deklarasi dan inisialisasi kolom 1
+
+    /**
+     * deklarasi dan inisialisasi kolom 2
+     */
     private static  String COL2 = "judul";  //deklarasi dan inisialisasi kolom 2
-    private static  String COL3 = "tanggal";    //deklarasi dan inisialisasi kolom 3
+
+    /**
+     * deklarasi dan inisialisasi kolom 3
+     */
+    private static  String COL3 = "tanggal";   //deklarasi dan inisialisasi kolom 3
+
+    /**
+     * deklarasi dan inisialisasi kolom 4
+     */
     private static  String COL4 = "jam";    //deklarasi dan inisialisasi kolom 4
+
 
     public DBHelper(Context context) {
         super(context, TABLE_NAME, null, 1);
@@ -31,6 +53,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     //method untuk membuat database sqlite
+    /**
+     * Method ini berfungsi untuk membuat database sqlite
+     */
     public void onCreate(SQLiteDatabase db) {
         String createTable = "CREATE TABLE " + TABLE_NAME + "(" + //create database dengan nama tabel yang sudah diinisialisasikan
                 COL1 + " integer primary key, " + //kolom 1 (ID) dengan tipe data integer dan merupakan primary key
@@ -43,12 +68,22 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     //Dipanggil ketika database perlu upgrade.
+    /**
+     * Digunakan ketika database perlu upgrade
+     */
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
     //Memasukkan data kedalam database
+    /**
+     * Method ini berfungsi untuk memasukkan data kedalam database
+     * @param item menyimpan item yang di inputkan oleh user
+     * @param date menyimpan date yang di inputkan oleh user
+     * @param time menyimpan time yang di inputkan oleh user
+     * @return mengembalikan nilai jika kondisi true true
+     */
     public boolean insertData(String item, String date, String time) {
         SQLiteDatabase db = this.getWritableDatabase();//menuliskan data kedalam database
         //inisialisasi CnvertValues
@@ -63,6 +98,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //Menghapus data dari database
+
+    /**
+     * Method untuk menghapus data dari database
+     * @param id  berfungsi untuk menghapus data berdasarkan id
+     */
     public void deleteData(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         //menghapus data berdasarkan id
@@ -70,6 +110,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //Memuat semua data ke dalam listview
+
+    /**
+     * Method yang berfungsi untuk memuat semua data ke dalam listview
+     * @return mengembalikan nilai arrayList
+     */
     public ArrayList<Pengingat> getAllData() {
         ArrayList<Pengingat> arrayList = new ArrayList<>();//data didalam Pengingat diubah menjadi arraylist
         SQLiteDatabase db = this.getReadableDatabase();//membaca data dalam database
@@ -82,7 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
             int id = cursor.getInt(0);//baca id dengan tipe data int dalam index 0
             String title = cursor.getString(1);//baca title dengan tipe data string dalam index 1
             String date = cursor.getString(2);//baca date dengan tipe data string dalam index 2
-            String time = cursor.getString(3);//baca tine dengan tipe data string dalam index 3
+            String time = cursor.getString(3);//baca time dengan tipe data string dalam index 3
 
             //menginisialisasi variabel modelData yang berisi data yang diinput oleh user
             Pengingat modelData = new Pengingat(id, title, date, time);

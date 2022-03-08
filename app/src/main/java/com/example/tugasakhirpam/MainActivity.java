@@ -59,11 +59,27 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     //deklarasi
+    /**
+     * inisialisasi dari class DBHelper
+     */
     private DBHelper databaseHelper;
+    /**
+     * inisialisasi dari ListView
+     */
     private ListView itemsListView;
+
+    /**
+     * inisialisasi dari FloatingActionButton
+     */
     private FloatingActionButton fab;
 
     @Override
+
+    /**
+     * Method ini akan dipanggil bila sebelumnya tidak ada database
+     *
+     *
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -81,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method yang berfungsi untuk mengatur notifikasi
+     * @param notification parameter yang digunakan untuk
+     * @param delay parameter ini berfungsi untuk mengatur delay notifikasi
+     */
     //Mengatur notifikasi
     private void scheduleNotification(Notification notification, long delay) {
         //memanggil class Notifikasi
@@ -97,6 +118,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method untuk menampilkan notifikasi
+     * @param content parameter untuk menampilkan text sesuai dengan content
+     * @return memunculkan notifikasi
+     * @see Notification
+     */
     private Notification getNotification(String content) {
 
         //Saat notifikasi di klik oleh user akan masuk ke MainActivity
@@ -117,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         notificationBuilder.setChannelId(NOTIFICATION_CHANNEL_ID)
                 .setSound(soundUri)//untuk memutar suara notifikasi
                 .setContentIntent(pendingIntent);
+
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -140,6 +168,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Method ini berfungsi untuk memasukkan data kedalam database
+     * @param judul parameter untuk menyimpan judul yang diinputkan oleh user
+     * @param tanggal parameter untuk menyimpan tanggal yang diinputkan oleh user
+     * @param jam parameter untuk menyimpan jam yang diinputkan oleh user
+     */
     //Memasukkan data ke dalam database
     private void insertDataToDb(String judul, String tanggal, String jam) {
         //mengirim variabel yang di input user ke databaseHelper untuk dimasukkan ke dalam database
@@ -155,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
             toastMsg("Opps.. terjadi kesalahan saat menyimpan!");//menampilkan pesan toast
     }
 
+    /**
+     * Mengambil seluruh data dari database ke listview
+     */
     //Mengambil seluruh data dari database ke listview
     private void populateListView() {
         try {
@@ -170,11 +207,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Menampilkan dialog ketika fab diklik
+     */
     private void onFabClick() { //saat buton fab diklik maka akan menjalankan kode didalamnya
         try {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                //jika button fab diklik akan menampilkan dialog
+
                 public void onClick(View v) {
                     showAddDialog();
                 }
@@ -186,12 +226,16 @@ public class MainActivity extends AppCompatActivity {
 
     //Fungsi dari tombol tambah
     @SuppressLint("SimpleDateFormat")
+    /**
+     * Method ini berfungsi untuk menampilkan dialog untuk mengatur pengingat
+     */
     private void showAddDialog() {  //menampilkan dialog
         //inisialisasi AlertDialog.Builder
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getLayoutInflater().getContext());
         LayoutInflater inflater = this.getLayoutInflater();
         @SuppressLint("InflateParams")
         //menghubungkan dengan layout dialog_pengingat
+
         final View dialogView = inflater.inflate(R.layout.dialog_pengingat, null);
         dialogBuilder.setView(dialogView);
 
@@ -219,8 +263,13 @@ public class MainActivity extends AppCompatActivity {
 
         //Set tanggal
         tanggal.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Berfungsi untuk menampilkan dialog date picker
+             *
+             */
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
+
             public void onClick(View v) {
                 //inisialisasi DatePickerDialog
                 final DatePickerDialog datePickerDialog = new DatePickerDialog(getLayoutInflater().getContext(),
@@ -245,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         //Set Jam
         waktu.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
                 //inisialisasi dialog time picker
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getLayoutInflater().getContext(),
@@ -278,9 +328,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
         dialogBuilder.setTitle("Buat Pengingat Baru");//Judul dialog
         //positif button berfungsi untuk menambahkan pengingat yang sudah diisi oleh user
         dialogBuilder.setPositiveButton("Tambah", new DialogInterface.OnClickListener() {
+            /**
+             * Method untuk memastikan semua data terisi agar pengingat dapat tersimpan
+             * @param dialog parameter yang menginisialisasi DialogInterface yang berfungsi untuk dialog yang dapat ditampilkan, ditutup, atau dibatalkan, dan mungkin memiliki tombol yang dapat diklik.
+             * @param whichButton
+             */
             public void onClick(DialogInterface dialog, int whichButton) {
                 String title = judul.getText().toString();
                 String date = tanggal.getText().toString();
@@ -300,6 +356,11 @@ public class MainActivity extends AppCompatActivity {
         });
         //negatif button berfungsi untuk keluar dari dialog
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            /**
+             * Method ini berfungsi untuk keluar dari dialog ketika button cancel diklik
+             * @param dialog parameter yang menginisialisasi DialogInterface yang berfungsi untuk dialog yang dapat ditampilkan, ditutup, atau dibatalkan, dan mungkin memiliki tombol yang dapat diklik.
+             * @param whichButton
+             */
             public void onClick(DialogInterface dialog, int whichButton) {
                 dialog.cancel();
             }
@@ -311,22 +372,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Metode pesan toast
+
+    /**
+     * Method ini berfungsi untuk menampilkan toast message
+     * @param msg parameter ini berfungsi untuk menyimpan pesan yang akan ditampilkan pada toast
+     */
     private void toastMsg(String msg) {
         Toast t = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         t.setGravity(Gravity.CENTER, 0,0);
         t.show();
     }
+
+
+    /**
+     * Berfungsi untuk mengambil data bulan
+     * @param month parameter untuk menyimpan data bulan
+     * @return  mengenkapsulasi data pemformatan tanggal-waktu yang dapat dilokalkan
+     */
     private String getMonth(int month) {
         return new DateFormatSymbols().getMonths()[month - 1];
     }
 
     //membuat menu
+
+    /**
+     * Method ini digunakan untuk membuat menu
+     * @param menu menginisialisasi komponen Menu
+     * @return menampilkan menu
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.about, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     //memanggil item menu
+
+    /**
+     * Method yang berfungsi untuk memanggil item pada menu
+     * @param item Parameter ini merupakan inisialisasi dari MenuItem yang berfungsi untuk akses langsung ke item menu yang dibuat sebelumnya
+     * @return mengembalikan item pada menu
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.tentang){
             callAbout();//memanggil method
@@ -334,6 +419,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Memanggil method About
+     */
     public void callAbout(){
         //inisialisasi AlertDialog.Builder
         final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
